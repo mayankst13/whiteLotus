@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Unlocking — White Lotus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--primary:#6c63ff;--dark:#1a1a2e;--darker:#16213e;--light:#f5f5f5;--gray:#8a8a8a;--success:#2ecc71;--danger:#e74c3c}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+    body{background:linear-gradient(135deg,var(--darker),var(--dark));color:var(--light);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .card{max-width:720px;width:100%;background:rgba(255,255,255,0.03);padding:30px;border-radius:14px;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+    h1{font-size:32px;margin-bottom:10px;background:linear-gradient(90deg,var(--primary),#ff6584);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    p{color:var(--gray);margin-bottom:14px}
+    .count{font-weight:700;color:var(--light);margin-top:8px}
+    .btn{display:inline-block;padding:10px 20px;border-radius:50px;background:linear-gradient(90deg,var(--primary),#564fd8);color:white;border:none;cursor:pointer;margin-top:12px}
+    .btn-secondary{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+    .error-message{color:var(--danger);margin-top:15px;display:none}
+    .success-message{color:var(--success);margin-top:15px;display:none}
+    .spinner{border:3px solid rgba(255,255,255,0.1);border-top:3px solid var(--primary);border-radius:50%;width:40px;height:40px;margin:20px auto;animation:spin 1s linear infinite}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🔐 Verifying Access...</h1>
+    <p>Please wait while we verify the AdrinoLink check. If verification is successful you'll be granted access and redirected to Gateway Pro.</p>
+    <div class="spinner"></div>
+    <div id="status" class="count">Verifying...</div>
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+    <div style="margin-top:12px">
+      <button class="btn" id="goIndexBtn" style="display:none">Go to Site</button>
+      <button class="btn btn-secondary" id="retryBtn" style="display:none">Try Again</button>
+      <button class="btn btn-secondary" id="generateKeyBtn" style="display:none">Generate New Key</button>
+    </div>
+  </div>
+
+<script>
+/* ---------- CONFIG ---------- */
+const CONFIG = {
+  ACCESS_KEY_STORAGE: 'premium_access_gwpro',
+  ACCESS_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
+  INDEX_PAGE: 'index.html',
+  KEYGEN_PAGE: 'keygen.html'
+};
+
+function qs(key){ 
+  const u = new URL(window.location.href); 
+  return u.searchParams.get(key); 
+}
+
+/* Flow:
+   - keygen.html created a sessionStorage 'gwpro:pending' object { userId, token }
+   - Adrino redirected to this page with ?uid=...&token=...&ts=...
+   - Here we validate that the incoming uid/token match the pending object and then set permanent access in localStorage.
+   - This ties the Adrino redirect path to the previously generated token.
+*/
+
+(async function(){
+  const statusEl = document.getElementById('status');
+  const errorEl = document.getElementById('errorMessage');
+  const successEl = document.getElementById('successMessage');
+  const goBtn = document.getElementById('goIndexBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const generateKeyBtn = document.getElementById('generateKeyBtn');
+  
+  // Hide all buttons initially
+  goBtn.style.display = 'none';
+  retryBtn.style.display = 'none';
+  generateKeyBtn.style.display = 'none';
+  errorEl.style.display = 'none';
+  successEl.style.display = 'none';
+
+  try {
+    const pendingRaw = sessionStorage.getItem('gwpro:pending');
+    const incomingUid = qs('uid');
+    const incomingToken = qs('token');
+    const timestamp = qs('ts');
+
+    if (!pendingRaw) {
+      statusEl.textContent = 'No pending verification found.';
+      errorEl.textContent = 'Please generate a key first.';
+      errorEl.style.display = 'block';
+      generateKeyBtn.style.display = 'inline-block';
+      generateKeyBtn.onclick = ()=> window.location.href=CONFIG.KEYGEN_PAGE;
+      return;
+    }
+
+    const pending = JSON.parse(pendingRaw);
+    
+    // Check if verification is expired (more than 10 minutes)
+    if (timestamp && (Date.now() - parseInt(timestamp)) > 10 * 60 * 1000) {
+      statusEl.textContent = 'Verification expired.';
+      errorEl.textContent = 'The verification link has expired. Please generate a new key.';
+      errorEl.style.display = 'block';
+      generateKeyBtn.style.display = 'inline-block';
+      generateKeyBtn.onclick = ()=> window.location.href=CONFIG.KEYGEN_PAGE;
+      sessionStorage.removeItem('gwpro:pending');
+      return;
+    }
+
+    // Basic validation: incoming must match pending token & uid
+    if (!incomingUid || !incomingToken) {
+      statusEl.textContent = 'Verification failed: missing parameters.';
+      errorEl.textContent = 'Invalid verification link. Please generate a new key.';
+      errorEl.style.display = 'block';
+      retryBtn.style.display = 'inline-block';
+      retryBtn.onclick = ()=> window.location.href=CONFIG.KEYGEN_PAGE;
+      return;
+    }
+
+    if (incomingUid !== pending.userId || incomingToken !== pending.token) {
+      statusEl.textContent = 'Verification mismatch.';
+      errorEl.textContent = 'Possible tampering detected. Generate a new key.';
+      errorEl.style.display = 'block';
+      generateKeyBtn.style.display = 'inline-block';
+      generateKeyBtn.onclick = ()=> window.location.href=CONFIG.KEYGEN_PAGE;
+      sessionStorage.removeItem('gwpro:pending');
+      return;
+    }
+
+    // Success: create permanent access object in localStorage
+    const now = Date.now();
+    const accessObj = {
+      userId: pending.userId,
+      token: pending.token,
+      grantedAt: now,
+      expiresAt: now + CONFIG.ACCESS_DURATION_MS
+    };
+    
+    localStorage.setItem(CONFIG.ACCESS_KEY_STORAGE, JSON.stringify(accessObj));
+    
+    // cleanup pending
+    sessionStorage.removeItem('gwpro:pending');
+
+    statusEl.textContent = `Access granted for ${accessObj.userId}. Redirecting to site...`;
+    successEl.textContent = '🎉 Congratulations! Access granted successfully.';
+    successEl.style.display = 'block';
+    goBtn.style.display = 'inline-block';
+    goBtn.onclick = ()=> window.location.href = CONFIG.INDEX_PAGE;
+
+    // auto redirect after short delay
+    setTimeout(()=> { 
+      window.location.href = CONFIG.INDEX_PAGE; 
+    }, 3000);
+
+  } catch (e) {
+    console.error('Verification error:', e);
+    statusEl.textContent = 'An error occurred during verification.';
+    errorEl.textContent = 'Please try again or generate a new key.';
+    errorEl.style.display = 'block';
+    retryBtn.style.display = 'inline-block';
+    retryBtn.onclick = ()=> window.location.reload();
+    generateKeyBtn.style.display = 'inline-block';
+    generateKeyBtn.onclick = ()=> window.location.href=CONFIG.KEYGEN_PAGE;
+  }
+})();
+</script>
+</body>
+</html>

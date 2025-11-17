@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Generate Access Key - White Lotus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{--primary:#6c63ff;--primary-dark:#564fd8;--secondary:#ff6584;--dark:#1a1a2e;--darker:#16213e;--light:#f5f5f5;--gray:#8a8a8a}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+    body{background:linear-gradient(135deg,var(--darker),var(--dark));color:var(--light);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .keygen-card{max-width:640px;width:100%;background:rgba(255,255,255,0.03);border-radius:20px;padding:36px;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+    h2{font-size:32px;margin-bottom:14px;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    p{color:var(--gray);margin-bottom:20px}
+    .btn{display:inline-block;padding:12px 24px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;border-radius:50px;border:none;cursor:pointer;font-weight:600}
+    .btn-secondary{background:transparent;border:2px solid var(--primary);color:var(--primary);border-radius:50px;padding:10px 20px}
+    .user-info{background:rgba(255,255,255,0.03);padding:12px;border-radius:8px;margin-bottom:16px;text-align:left;color:var(--gray)}
+    .success-message{display:none;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:20px;margin-top:20px;color:var(--light)}
+    .success-message.show{display:block}
+    .loading{display:none;margin-top:20px}
+    .loading.show{display:block}
+    .spinner{border:3px solid rgba(255,255,255,0.1);border-top:3px solid var(--primary);border-radius:50%;width:40px;height:40px;margin:0 auto;animation:spin 1s linear infinite}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="keygen-card">
+    <h2>🔑 Generate Access Key</h2>
+    <p>To get free access, click Generate. You'll be verified via VPLink and then returned here to unlock the site.</p>
+    <div class="user-info">
+      <div><strong>User ID:</strong> <span id="userId">USER-XXXX</span></div>
+      <div><strong>Validity:</strong> <span id="validity">24 hours</span></div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn" id="generateKeyBtn"><i class="fas fa-key"></i> Generate Access Key</button>
+      <button class="btn-secondary" id="howToBtn"><i class="fas fa-question-circle"></i> How it works</button>
+    </div>
+    <p style="margin-top:16px;color:var(--gray)">You will be redirected through VPLink. Only after VPLink verifies the visit you'll be sent to the unlock page which grants access.</p>
+    
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p style="margin-top:10px">Generating key...</p>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+      <h3 style="color:#2ecc71;margin-bottom:10px"><i class="fas fa-check-circle"></i> Key Generated Successfully!</h3>
+      <p>Your access key has been generated. You will be redirected to the unlock page shortly.</p>
+    </div>
+  </div>
+
+<script>
+/* ---------- CONFIG ---------- */
+const CONFIG = {
+  VPLINK_API_KEY: '4422e8a3a6cf9f8b482e4e1974ab01b7139feb0f', // VPLink API key
+  VPLINK_ENDPOINT: 'https://gplinks.com/api', // VPLink API endpoint
+  UNLOCK_URL: window.location.origin + '/unlock.html',
+  ACCESS_DURATION_MS: 24 * 60 * 60 * 1000
+};
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const userId = 'USER-' + Math.random().toString(36).substring(2,8).toUpperCase();
+  document.getElementById('userId').textContent = userId;
+  document.getElementById('generateKeyBtn').addEventListener('click', ()=> generateKey(userId));
+  document.getElementById('howToBtn').addEventListener('click', ()=> window.open('https://youtube.com/watch?v=how-to-generate-key','_blank'));
+});
+
+async function generateKey(userId){
+  const btn = document.getElementById('generateKeyBtn');
+  const loading = document.getElementById('loading');
+  const successMessage = document.getElementById('successMessage');
+  
+  const orig = btn.innerHTML;
+  btn.innerHTML = 'Generating...';
+  btn.disabled = true;
+  loading.classList.add('show');
+  successMessage.classList.remove('show');
+
+  // Create a random token that will be returned back via the shortener redirect
+  const token = Math.random().toString(36).slice(2,12);
+  
+  // Build the return URL that VPLink should redirect to after verification
+  const returnUrl = `${CONFIG.UNLOCK_URL}?uid=${encodeURIComponent(userId)}&token=${encodeURIComponent(token)}&ts=${Date.now()}`;
+
+  try {
+    // Call VPLink shortener endpoint
+    const endpoint = `${CONFIG.VPLINK_ENDPOINT}?api=${CONFIG.VPLINK_API_KEY}&url=${encodeURIComponent(returnUrl)}`;
+    const resp = await fetch(endpoint, { method: 'GET' });
+    
+    if(!resp.ok) throw new Error('VPLink responded ' + resp.status);
+    
+    const j = await resp.json();
+    const short = j.shortenedUrl || j.short || j.resultUrl || j.data?.short || null;
+    
+    if(!short) throw new Error('VPLink did not return shortened url');
+
+    // Store a temporary pre-check object in sessionStorage so unlock.html can verify token
+    sessionStorage.setItem('gwpro:pending', JSON.stringify({ userId, token, createdAt: Date.now() }));
+
+    // Show success message
+    loading.classList.remove('show');
+    successMessage.classList.add('show');
+    
+    // Redirect user to the short URL after a short delay
+    setTimeout(() => {
+      window.location.href = short;
+    }, 2000);
+    
+  } catch (err) {
+    console.error('VPLink shorten failed', err);
+    alert('Could not contact VPLink shortener. Try again or check API key.');
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    loading.classList.remove('show');
+  }
+}
+</script>
+</body>
+</html>

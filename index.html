@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>White Lotus - Premium Education Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* (kept your theme styles mostly intact) */
+    :root{--primary:#6c63ff;--primary-dark:#564fd8;--secondary:#ff6584;--dark:#1a1a2e;--darker:#16213e;--light:#f5f5f5;--gray:#8a8a8a;--success:#2ecc71}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+    body{background:linear-gradient(135deg,var(--darker),var(--dark));color:var(--light);min-height:100vh;overflow-x:hidden}
+    .container{max-width:1200px;margin:0 auto;padding:0 20px}
+    header{background:rgba(26,26,46,0.9);backdrop-filter:blur(10px);padding:20px 0;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.1)}
+    .header-content{display:flex;justify-content:space-between;align-items:center}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo i{font-size:28px;color:var(--primary)}
+    .logo h1{font-size:24px;font-weight:700;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .main-content{padding:40px 0;min-height:calc(100vh - 160px)}
+    .welcome-section{text-align:center;margin-bottom:50px;padding:40px 20px;background:rgba(255,255,255,0.05);border-radius:20px;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)}
+    .welcome-section h2{font-size:36px;margin-bottom:15px;background:linear-gradient(90deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .welcome-section p{font-size:18px;color:var(--gray);max-width:700px;margin:0 auto 25px}
+    .btn{display:inline-block;padding:12px 30px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:50px;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;box-shadow:0 4px 15px rgba(108,99,255,.3)}
+    .btn-secondary{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+    .semester-tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-bottom:40px}
+    .sem-tab{padding:12px 25px;background:rgba(255,255,255,0.05);border-radius:10px;cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,0.1);font-weight:500}
+    .sem-tab:hover{background:rgba(108,99,255,0.2);transform:translateY(-3px)}
+    .sem-tab.active{background:var(--primary);box-shadow:0 4px 15px rgba(108,99,255,0.4)}
+    .content-section{display:none;animation:fadeIn .5s ease}
+    .content-section.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .section-title{font-size:28px;margin-bottom:25px;text-align:center;position:relative}
+    .section-title::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:80px;height:3px;background:var(--primary);border-radius:10px}
+    .dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;margin-bottom:40px}
+    .dept-card{background:rgba(255,255,255,0.05);border-radius:15px;padding:25px;text-align:center;cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,0.1)}
+    .dept-icon{font-size:40px;margin-bottom:15px;color:var(--primary)}
+    .subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;margin-bottom:40px}
+    .subject-card{background:rgba(255,255,255,0.05);border-radius:15px;padding:20px;cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,0.1)}
+    .unit-accordion{margin-bottom:30px}
+    .unit-item{background:rgba(255,255,255,0.05);border-radius:10px;margin-bottom:15px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)}
+    .unit-header{padding:15px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .3s}
+    .unit-content{padding:0 20px;max-height:0;overflow:hidden;transition:all .3s ease-in-out}
+    .unit-content.active{padding:20px;max-height:2000px;overflow-y:auto}
+    .lecture-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
+    .lecture-item{background:rgba(255,255,255,0.03);border-radius:8px;padding:15px;cursor:pointer;transition:all .3s;border:1px solid rgba(255,255,255,0.05);text-align:center;position:relative;overflow:hidden}
+    .lecture-loading{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(108,99,255,.1);display:none;align-items:center;justify-content:center;color:var(--primary)}
+    .lecture-loading.active{display:flex}
+    .telegram-btn{position:fixed;bottom:30px;right:30px;width:60px;height:60px;background:#0088cc;border-radius:50%;display:flex;justify-content:center;align-items:center;color:white;font-size:24px;cursor:pointer;box-shadow:0 4px 20px rgba(0,136,204,.4);z-index:100;transition:all .3s}
+    .telegram-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:1000}
+    .telegram-modal.active{display:flex}
+    .telegram-content{background:var(--dark);border-radius:20px;padding:30px;max-width:400px;width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1)}
+    footer{background:rgba(26,26,46,0.9);padding:30px 0;text-align:center;border-top:1px solid rgba(255,255,255,.1)}
+    .popup-notification{position:fixed;top:20px;right:20px;background:var(--dark);padding:15px 20px;border-radius:10px;border-left:4px solid var(--primary);box-shadow:0 5px 15px rgba(0,0,0,.3);z-index:3000;transform:translateX(400px);transition:transform .3s ease}
+    .popup-notification.show{transform:translateX(0)}
+    .lecture-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;justify-content:center;align-items:center;z-index:3000}
+    .lecture-modal.active{display:flex}
+    .lecture-modal-content{background:var(--dark);border-radius:15px;padding:30px;max-width:500px;width:90%;text-align:center}
+    .mobile-back-btn{display:none;position:fixed;bottom:100px;left:20px;background:var(--primary);color:white;width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(108,99,255,.4);z-index:99;cursor:pointer}
+    @media(max-width:768px){.mobile-back-btn{display:flex}.dept-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.subject-grid{grid-template-columns:1fr}.lecture-list{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <!-- popup/lecture modals (kept from your file) -->
+  <div class="popup-notification" id="popupNotification"><div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-info-circle" style="color:var(--primary)"></i><span id="popupMessage">Opening lecture...</span></div></div>
+
+  <div class="lecture-modal" id="lectureModal"><div class="lecture-modal-content"><h3><i class="fas fa-external-link-alt"></i> Opening Lecture</h3><p>The lecture will open in a new tab. If blocked, open manually.</p><div class="btn-group" style="display:flex;gap:12px;justify-content:center"><button class="btn" id="openManuallyBtn"><i class="fas fa-external-link-alt"></i> Open Manually</button><button class="btn btn-secondary" id="closeLectureModalBtn"><i class="fas fa-times"></i> Cancel</button></div></div></div>
+
+  <div id="mainWebsite">
+    <header><div class="container"><div class="header-content"><div class="logo"><i class="fas fa-graduation-cap"></i><h1>White Lotus</h1></div><div style="display:flex;gap:10px;align-items:center"><div id="accessBadge" style="color:var(--gray);font-size:14px">Checking access...</div></div></div></div></header>
+
+    <div class="main-content"><div class="container"><div class="nav-history" id="navHistory"></div>
+
+      <section class="welcome-section"><h2>Welcome to White Lotus</h2><p>Your premier destination for quality engineering education. Access comprehensive courses, video lectures, and study materials for all semesters.</p><button class="btn" id="exploreBtn">Explore Courses</button></section>
+
+      <div class="semester-tabs" id="semesterTabs"></div>
+      <div id="contentSections"></div>
+
+    </div></div>
+
+    <footer><div class="container"><div class="footer-content"><div class="footer-logo"><i class="fas fa-graduation-cap"></i><h2>White Lotus</h2></div><div class="copyright">&copy; White Lotus</div></div></div></footer>
+  </div>
+
+  <div class="mobile-back-btn" id="mobileBackBtn" onclick="goBack()"><i class="fas fa-arrow-left"></i></div>
+
+  <div class="telegram-btn" id="telegramBtn"><i class="fab fa-telegram"></i></div>
+  <div class="telegram-modal" id="telegramModal"><div class="telegram-content"><h3>Join Our Telegram Channel</h3><p>Stay updated with the latest course materials, announcements, and educational resources.</p><button class="btn" id="joinTelegramBtn"><i class="fab fa-telegram"></i> Join Telegram</button><button class="btn btn-secondary" id="closeTelegramBtn" style="margin-top:10px">Close</button></div></div>
+
+<script>
+/* ---------- CONFIG ---------- */
+const CONFIG = {
+  REQUIRE_KEY: true,                // true = must have a valid token to view index.html
+  ACCESS_STORAGE_KEY: 'premium_access_gwpro',
+  ACCESS_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
+  LECTURE_SHORTENER: false,          // when true, attempt to shorten lecture URLs via Adrino
+  VPLINK_API_KEY: '4422e8a3a6cf9f8b482e4e1974ab01b7139feb0f', // VPLink API key
+  VPLINK_ENDPOINT: 'https://gplinks.com/api', // VPLink API endpoint
+//   UNLOCK_URL: window.location.origin + '/unlock.html',
+  TELEGRAM_CHANNEL: 'https://t.me/whitelotushunters',
+  TUTORIAL_VIDEO: 'https://youtube.com/watch?v=how-to-generate-key',
+  KEYGEN_PAGE: 'keygen.html',
+  UNLOCK_PAGE: 'unlock.html'
+};
+
+/* ---------- Access check on load ---------- */
+document.addEventListener('DOMContentLoaded', ()=> {
+  if (CONFIG.REQUIRE_KEY) {
+    const access = localStorage.getItem(CONFIG.ACCESS_STORAGE_KEY);
+    if (!access) {
+      // no key -> redirect to unlock (which asks to generate)
+      window.location.href = CONFIG.UNLOCK_PAGE;
+      return;
+    }
+    try {
+      const parsed = JSON.parse(access);
+      if (!parsed.token || Date.now() > parsed.expiresAt) {
+        // expired or missing -> clear and redirect
+        localStorage.removeItem(CONFIG.ACCESS_STORAGE_KEY);
+        alert('Key expired or invalid. Please generate a new key.');
+        window.location.href = CONFIG.UNLOCK_PAGE;
+        return;
+      }
+      // valid: show badge and render content
+      document.getElementById('accessBadge').textContent = `Access: ${parsed.userId} (valid until ${new Date(parsed.expiresAt).toLocaleString()})`;
+    } catch (e) {
+      localStorage.removeItem(CONFIG.ACCESS_STORAGE_KEY);
+      window.location.href = CONFIG.UNLOCK_PAGE;
+      return;
+    }
+  } else {
+    document.getElementById('accessBadge').textContent = 'Access: Public (no key required)';
+  }
+
+  initApp();
+});
+
+/* ---------- App data (kept from your original file) ---------- */
+const SEMESTERS = [
+  { id: "1-2", name: "Semester 1-2", icon: "fas fa-book-open" },
+  { id: "3-4", name: "Semester 3-4", icon: "fas fa-laptop-code" },
+  { id: "5-6", name: "Semester 5-6", icon: "fas fa-cogs" },
+  { id: "7-8", name: "Semester 7-8", icon: "fas fa-rocket" }
+];
+
+const DEPARTMENTS = [
+  { id: "cse", name: "Computer Science", icon: "fas fa-laptop-code", description: "Programming, Algorithms, Systems" },
+  { id: "ece", name: "Electronics & Communication", icon: "fas fa-microchip", description: "Circuits, Signals, Communication" },
+  { id: "me", name: "Mechanical Engineering", icon: "fas fa-cogs", description: "Design, Manufacturing, Thermodynamics" },
+  { id: "ae", name: "Aerospace Engineering", icon: "fas fa-rocket", description: "Aerodynamics, Propulsion, Structures" }
+];
+
+const COURSES = {
+  "5-6": {
+    "cse": [
+      { 
+                        id: "daa", 
+                        name: "DAA By Gateway Classs", 
+                        icon: "fas fa-code",
+                        description: "DAA",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a0ac0d872554b3c1083" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a12c0d872554b3c1084" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a19c0d872554b3c1085" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a1ec0d872554b3c1086" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a24c0d872554b3c1087" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a39c0d872554b3c1088" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a3ec0d872554b3c1089" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a47c0d872554b3c108a" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a4ec0d872554b3c108b" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a53c0d872554b3c108c" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a57c0d872554b3c108d" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a5bc0d872554b3c108e" },
+                                    { name: " L13", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a61c0d872554b3c108f" },
+                                    { name: "oneshot p1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a79c0d872554b3c1090" },
+                                    { name: "oneshot p2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032a7fc0d872554b3c1091" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032ad6c0d872554b3c1093" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032adbc0d872554b3c1094" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032ae0c0d872554b3c1095" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032ae5c0d872554b3c1096" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032aecc0d872554b3c1097" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b02c0d872554b3c1098" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b0fc0d872554b3c1099" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b16c0d872554b3c109a" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b1ec0d872554b3c109b" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b25c0d872554b3c109c" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b32c0d872554b3c109d" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b51c0d872554b3c109e" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b57c0d872554b3c109f" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b5ec0d872554b3c10a0" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b67c0d872554b3c10a1" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b6cc0d872554b3c10a2" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b70c0d872554b3c10a3" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b74c0d872554b3c10a4" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b7dc0d872554b3c10a5" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b85c0d872554b3c10a6" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b94c0d872554b3c10a7" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b9ac0d872554b3c10a8" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032b9fc0d872554b3c10a9" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032ba5c0d872554b3c10aa" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032badc0d872554b3c10ab" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bb2c0d872554b3c10ac" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bb6c0d872554b3c10ad" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bbcc0d872554b3c10ae" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bc4c0d872554b3c10af" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bcbc0d872554b3c10b0" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bd0c0d872554b3c10b1" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bd9c0d872554b3c10b2" },
+                                    { name: "one shot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032be9c0d872554b3c10b3" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    { name: "L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032bfac0d872554b3c10b4" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032c01c0d872554b3c10b5" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032c05c0d872554b3c10b6" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032c0ac0d872554b3c10b7" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69032c0fc0d872554b3c10b8" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690330afc0d872554b3c10b9" },
+                                ]
+                            },
+                        ]
+                    },
+      { 
+                        id: "webtech", 
+                        name: "Web Technology By Gateway Classs", 
+                        icon: "fas fa-code",
+                        description: "Web Technology",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+
+                                    { name: "L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c1c0d872554b3c10be" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c1c0d872554b3c10bc" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c1c0d872554b3c10bb" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c1c0d872554b3c10bf" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c1c0d872554b3c10bd" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690333c0c0d872554b3c10ba" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903342dc0d872554b3c10c0" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033432c0d872554b3c10c1" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033436c0d872554b3c10c2" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903343ac0d872554b3c10c3" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033440c0d872554b3c10c4" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033452c0d872554b3c10c5" },
+                                    { name: " L13", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033467c0d872554b3c10c6" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033472c0d872554b3c10c7" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033478c0d872554b3c10c8" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903347bc0d872554b3c10c9" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903347fc0d872554b3c10ca" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033483c0d872554b3c10cb" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033486c0d872554b3c10cc" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903348ac0d872554b3c10cd" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903348ec0d872554b3c10ce" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033492c0d872554b3c10cf" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033496c0d872554b3c10d0" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334a2c0d872554b3c10d1" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334acc0d872554b3c10d2" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334b0c0d872554b3c10d3" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334b4c0d872554b3c10d4" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334b8c0d872554b3c10d5" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334bcc0d872554b3c10d6" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334c0c0d872554b3c10d7" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334d0c0d872554b3c10d8" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334d4c0d872554b3c10d9" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334dac0d872554b3c10da" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334ddc0d872554b3c10db" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334e1c0d872554b3c10dc" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334e5c0d872554b3c10dd" },
+                                    { name: " L13", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334ebc0d872554b3c10de" },
+                                    { name: "L14", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334efc0d872554b3c10df" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690334fbc0d872554b3c10e0" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903350bc0d872554b3c10e1" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033510c0d872554b3c10e2" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033516c0d872554b3c10e3" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033522c0d872554b3c10e4" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033526c0d872554b3c10e5" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903352ac0d872554b3c10e6" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903352ec0d872554b3c10e7" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903353bc0d872554b3c10e8" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033558c0d872554b3c10e9" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903355cc0d872554b3c10ea" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903356bc0d872554b3c10eb" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033572c0d872554b3c10ec" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6903361ac0d872554b3c10ed" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033625c0d872554b3c10ee" },
+                                ]
+                            },
+                        ]
+                    },
+      { 
+                        id: "dbms", 
+                        name: "DBMS By Gateway Classs", 
+                        icon: "fas fa-code",
+                        description: "DBMS",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+
+                                    { name: "L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bc5c0d872554b3c10ef" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bcfc0d872554b3c10f0" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bd3c0d872554b3c10f1" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bd7c0d872554b3c10f2" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bdbc0d872554b3c10f3" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033be1c0d872554b3c10f4" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033be7c0d872554b3c10f5" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bebc0d872554b3c10f6" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033beec0d872554b3c10f7" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033bf2c0d872554b3c10f8" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c05c0d872554b3c10f9" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c0cc0d872554b3c10fa" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c19c0d872554b3c10fb" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c34c0d872554b3c10fc" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c3ac0d872554b3c10fd" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c3ec0d872554b3c10fe" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c3ec0d872554b3c10fe" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c62c0d872554b3c10ff" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c67c0d872554b3c1100" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c6cc0d872554b3c1101" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c6fc0d872554b3c1102" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c73c0d872554b3c1103" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c76c0d872554b3c1104" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c7ac0d872554b3c1105" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c84c0d872554b3c1106" },
+                                    { name: " L13", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c88c0d872554b3c1107" },
+                                    { name: "L14", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033c8ec0d872554b3c1108" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cbdc0d872554b3c1109" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cc4c0d872554b3c110a" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cc9c0d872554b3c110b" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033ccdc0d872554b3c110c" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cd0c0d872554b3c110d" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cd4c0d872554b3c110e" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cd8c0d872554b3c110f" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033ce1c0d872554b3c1110" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cf2c0d872554b3c1111" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cf7c0d872554b3c1112" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033cfcc0d872554b3c1113" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d05c0d872554b3c1114" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d10c0d872554b3c1115" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d14c0d872554b3c1116" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d1bc0d872554b3c1117" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d1fc0d872554b3c1118" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d23c0d872554b3c1119" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d26c0d872554b3c111a" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d2ac0d872554b3c111b" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d2ec0d872554b3c111c" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d31c0d872554b3c111d" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d3ec0d872554b3c111e" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d44c0d872554b3c111f" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d52c0d872554b3c1120" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d61c0d872554b3c1121" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d66c0d872554b3c1122" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d69c0d872554b3c1123" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033d71c0d872554b3c1124" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033da9c0d872554b3c1125" },
+                                ]
+                            },
+                        ]
+                    },
+      { 
+                        id: "coi", 
+                        name: "Coi Oneshot  By Gateway Classs", 
+                        icon: "fas fa-code",
+                        description: "constitution of India",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+
+                                    { name: "u1 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033dc2c0d872554b3c1126" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " u2 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033dc6c0d872554b3c1127" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+
+                                ]
+                            },
+                            {
+                                name: "Unit 4 oneshot",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033e0fc0d872554b3c1128" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5 oneshot",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033e14c0d872554b3c1129" },
+                                ]
+                            },
+                        ]
+                    },                                          
+    ],
+    "ece": [
+                    { 
+                        id: "dsp", 
+                        name: "DSP", 
+                        icon: "fas fa-code",
+                        description: "Digital signal Processing",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+                                    { name: "L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760c50ca7faa97cd58173" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760cc0ca7faa97cd58174" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760d10ca7faa97cd58175" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760d70ca7faa97cd58176" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760db0ca7faa97cd58177" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760e10ca7faa97cd58178" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760e50ca7faa97cd58179" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760eb0ca7faa97cd5817a" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760ee0ca7faa97cd5817b" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760f30ca7faa97cd5817c" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690760f60ca7faa97cd5817d" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761070ca7faa97cd5817e" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907610c0ca7faa97cd5817f" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761100ca7faa97cd58180" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761140ca7faa97cd58181" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761180ca7faa97cd58182" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907611d0ca7faa97cd58183" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907611d0ca7faa97cd58184" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761270ca7faa97cd58185" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907612c0ca7faa97cd58186" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907614a0ca7faa97cd58187" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907614e0ca7faa97cd58188" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761520ca7faa97cd58189" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761570ca7faa97cd5818a" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907615a0ca7faa97cd5818b" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907615e0ca7faa97cd5818c" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761630ca7faa97cd5818d" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761670ca7faa97cd5818e" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907616b0ca7faa97cd5818f" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761700ca7faa97cd58190" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761750ca7faa97cd58191" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907618f0ca7faa97cd58192" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761930ca7faa97cd58193" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761970ca7faa97cd58194" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907619a0ca7faa97cd58195" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907619f0ca7faa97cd58196" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761a40ca7faa97cd58197" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761a70ca7faa97cd58198" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761ab0ca7faa97cd58199" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761b30ca7faa97cd5819a" },
+                                ]
+                            },
+                        ]
+                    },
+                    { 
+                        id: "mm", 
+                        name: "M&M", 
+                        icon: "fas fa-code",
+                        description: "Microprocessor and Microcontroller ",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761cb0ca7faa97cd5819b" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761cf0ca7faa97cd5819c" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761d30ca7faa97cd5819d" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761d70ca7faa97cd5819e" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761dc0ca7faa97cd5819f" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761e90ca7faa97cd581a0" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761ee0ca7faa97cd581a1" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761f20ca7faa97cd581a2" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761f80ca7faa97cd581a3" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690761fd0ca7faa97cd581a4" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762010ca7faa97cd581a5" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907620b0ca7faa97cd581a6" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762150ca7faa97cd581a7" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907621b0ca7faa97cd581a8" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762200ca7faa97cd581a9" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762240ca7faa97cd581aa" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907622a0ca7faa97cd581ab" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907622f0ca7faa97cd581ac" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762420ca7faa97cd581ad" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907624c0ca7faa97cd581ae" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762520ca7faa97cd581af" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762560ca7faa97cd581b0" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907625b0ca7faa97cd581b1" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762610ca7faa97cd581b2" },
+
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762660ca7faa97cd581b3" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6907626a0ca7faa97cd581b4" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/690762710ca7faa97cd581b5" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5 oneshot",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033e14c0d872554b3c1129" },
+                                ]
+                            },
+                        ]
+                    },
+                    { 
+                        id: "coi", 
+                        name: "COI", 
+                        icon: "fas fa-code",
+                        description: "Constitution of India ",
+                        units: [
+                            {
+                                name: "Unit 1 one shot",
+                                lectures: [
+
+                                    { name: "u1 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033dc2c0d872554b3c1126" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2 oneshot",
+                                lectures: [
+                                    { name: " u2 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033dc6c0d872554b3c1127" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3 oneshot",
+                                lectures: [
+
+                                ]
+                            },
+                            {
+                                name: "Unit 4 oneshot",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033e0fc0d872554b3c1128" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5 oneshot",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/69033e14c0d872554b3c1129" },
+                                ]
+                            },
+                        ]
+                    },
+                    { 
+                        id: "ic", 
+                        name: "IC", 
+                        icon: "fas fa-code",
+                        description: "Intigrated Circuit ",
+                        units: [
+                            {
+                                name: "Unit 1: Introduction to C",
+                                lectures: [
+                                    
+                                ]
+                            }
+                        ]
+                    },
+                ],
+  },
+  "3-4": {
+                "ece": [
+                    { 
+                        id: "dsd", 
+                        name: "DSD", 
+                        icon: "fas fa-code",
+                        description: "DSD by Gateway",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8130ca7faa97cd581b6" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b81a0ca7faa97cd581b7" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b81e0ca7faa97cd581b8" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8240ca7faa97cd581b9" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8290ca7faa97cd581ba" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b82e0ca7faa97cd581bb" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8340ca7faa97cd581bc" },
+                                    { name: "u1 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8380ca7faa97cd581bd" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b83e0ca7faa97cd581be" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8430ca7faa97cd581bf" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8550ca7faa97cd581c0" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8590ca7faa97cd581c1" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b85f0ca7faa97cd581c2" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8650ca7faa97cd581c3" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8680ca7faa97cd581c4" },
+                                    { name: "u2 oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b86c0ca7faa97cd581c5" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8710ca7faa97cd581c6" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b87b0ca7faa97cd581c7" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b87e0ca7faa97cd581c8" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8820ca7faa97cd581c9" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: "L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8860ca7faa97cd581ca" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8950ca7faa97cd581cb" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b89f0ca7faa97cd581cc" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8a70ca7faa97cd581cd" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8ac0ca7faa97cd581ce" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8b00ca7faa97cd581cf" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8b40ca7faa97cd581d0" },
+                                ]
+                            },
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    { name: "U5 One shot ", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909b8c50ca7faa97cd581d1" },
+                                ]
+                            },
+                        ]
+                    }
+                ],
+                "cse": [
+                    { 
+                        id: "dsa", 
+                        name: "DSA", 
+                        icon: "fas fa-code",
+                        description: "DSA by Nidhi mam",
+                        units: [
+                            {
+                                name: "Unit 1",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909be9c0ca7faa97cd581d2" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bea40ca7faa97cd581d3" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bea90ca7faa97cd581d4" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bead0ca7faa97cd581d5" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909beb10ca7faa97cd581d6" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909beb60ca7faa97cd581d7" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bebb0ca7faa97cd581d8" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bebf0ca7faa97cd581d9" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bec40ca7faa97cd581da" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bec90ca7faa97cd581db" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bece0ca7faa97cd581dc" },
+                                    { name: "L12", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bedf0ca7faa97cd581dd" },
+                                    { name: " L13", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bee40ca7faa97cd581de" },
+                                    { name: "L14", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909beea0ca7faa97cd581df" },
+                                    { name: "L15", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bef10ca7faa97cd581e0" },
+                                    { name: "L16", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bef50ca7faa97cd581e1" },
+                                    { name: " L17", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909befa0ca7faa97cd581e2" },
+                                ]
+                            },
+                            {
+                                name: "Unit 2",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf010ca7faa97cd581e3" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf290ca7faa97cd581e4" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf580ca7faa97cd581e5" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf5d0ca7faa97cd581e6" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf630ca7faa97cd581e7" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf690ca7faa97cd581e8" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf6d0ca7faa97cd581e9" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf720ca7faa97cd581ea" },
+                                    { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf760ca7faa97cd581eb" },
+                                    { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf7b0ca7faa97cd581ec" },
+                                    { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf7f0ca7faa97cd581ed" },
+                                    { name: "unit2 oneshot p1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf850ca7faa97cd581ee" },
+                                    { name: "u2 Oneshot p2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf8b0ca7faa97cd581ef" },
+                                ]
+                            },
+                            {
+                                name: "Unit 3",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf8f0ca7faa97cd581f0" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf970ca7faa97cd581f1" },
+                                    { name: "L3", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf9b0ca7faa97cd581f2" },
+                                    { name: "L4", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfb00ca7faa97cd581f3" },
+                                    { name: " L5", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfb50ca7faa97cd581f4" },
+                                    { name: "L6", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfb90ca7faa97cd581f5" },
+                                    { name: "L7", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfbd0ca7faa97cd581f6" },
+                                    { name: "L8", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfc10ca7faa97cd581f7" },
+                                    { name: "oneshot", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfc50ca7faa97cd581f8" },
+                                ]
+                            },
+                            {
+                                name: "Unit 4",
+                                lectures: [
+                                    { name: " L1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfc90ca7faa97cd581f9" },
+                                    { name: "L2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bfda0ca7faa97cd581fa" },
+                                ]
+                            },
+                            
+                            {
+                                name: "Unit 5",
+                                lectures: [
+                                    
+                                ]
+                            },
+                        ]
+                    }
+                ],
+            },
+ "1-2": {
+                "cse": [
+                    { 
+                        id: "pps", 
+                        name: "PPS", 
+                        icon: "fas fa-code",
+                        description: "PPS ",
+                        units: [
+                            {
+                                name: "Unit 1: Introduction to C",
+                                lectures: [
+                                    { name: "Introduction to C Programming", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Data Types and Variables", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Input and Output", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "ece": [
+                    { 
+                        id: "dsd", 
+                        name: "DSD", 
+                        icon: "fas fa-code",
+                        description: "DSD by Gateway",
+                        units: [
+                            {
+                                name: "Unit 1: Introduction to C",
+                                lectures: [
+                                    { name: "Introduction to C Programming", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Data Types and Variables", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Input and Output", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+            },
+ "7-8": {
+                "cse": [
+                    { 
+                        id: "ds", 
+                        name: "DSA", 
+                        icon: "fas fa-code",
+                        description: "DSA By Nidhi Mam",
+                        units: [
+                            {
+                                name: "Unit 1: Introduction to C",
+                                lectures: [
+                                    { name: "Introduction to C Programming", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Data Types and Variables", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+                                    { name: "Input and Output", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },                      
+};
+
+/* ---------- App logic: nav + render ---------- */
+let navigationStack = [];
+let currentState = { type: 'welcome' };
+let currentLectureUrl = '';
+
+function initApp(){
+  setupEventListeners();
+  generateSemesterTabs();
+  updateNavigationHistory();
+  setupPopupHandling();
+}
+
+function setupEventListeners(){
+  document.getElementById('exploreBtn').addEventListener('click', ()=> {
+    openSemester(SEMESTERS[0].id);
+  });
+  document.getElementById('telegramBtn').addEventListener('click', ()=> openTelegramModal());
+  document.getElementById('joinTelegramBtn').addEventListener('click', ()=> window.open(CONFIG.TELEGRAM_CHANNEL, '_blank'));
+  document.getElementById('closeTelegramBtn').addEventListener('click', ()=> closeTelegramModal());
+  document.getElementById('openManuallyBtn').addEventListener('click', ()=> openLectureManually());
+  document.getElementById('closeLectureModalBtn').addEventListener('click', ()=> closeLectureModal());
+  window.addEventListener('popstate', ()=> { if (navigationStack.length) { navigationStack.pop(); const prev = navigationStack[navigationStack.length-1]; if(prev) loadState(prev); }});
+}
+
+function generateSemesterTabs(){
+  const container = document.getElementById('semesterTabs');
+  container.innerHTML = '';
+  SEMESTERS.forEach(semester => {
+    const tab = document.createElement('div');
+    tab.className = 'sem-tab';
+    tab.id = `sem-${semester.id}-tab`;
+    tab.innerHTML = `<i class="${semester.icon}"></i> ${semester.name}`;
+    tab.addEventListener('click', ()=> openSemester(semester.id));
+    container.appendChild(tab);
+  });
+}
+
+function openSemester(semId, push=true){
+  if (push) pushState({type:'semester', semId});
+  document.querySelectorAll('.sem-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`sem-${semId}-tab`).classList.add('active');
+
+  const content = document.getElementById('contentSections');
+  content.innerHTML = `<section class="content-section active"><h2 class="section-title">Select Your Department</h2><div class="dept-grid" id="deptGrid"></div></section>`;
+  const grid = document.getElementById('deptGrid');
+  DEPARTMENTS.forEach(d => {
+    const card = document.createElement('div'); card.className='dept-card';
+    card.innerHTML = `<div class="dept-icon"><i class="${d.icon}"></i></div><h3>${d.name}</h3><p>${d.description}</p>`;
+    card.addEventListener('click', ()=> openDepartment(semId, d.id));
+    grid.appendChild(card);
+  });
+}
+
+function openDepartment(semId, deptId, push=true){
+  if (push) pushState({type:'department', semId, deptId});
+  const dept = DEPARTMENTS.find(d=>d.id===deptId);
+  const courses = COURSES[semId] && COURSES[semId][deptId] ? COURSES[semId][deptId] : [];
+  const content = document.getElementById('contentSections');
+  content.innerHTML = `<section class="content-section active"><button class="back-btn" onclick="openSemester('${semId}')"><i class="fas fa-arrow-left"></i> Back to Semesters</button><h2 class="section-title">${dept.name} - Subjects</h2><div class="subject-grid" id="subjectGrid"></div></section>`;
+  const grid = document.getElementById('subjectGrid');
+  if (!courses.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px"><i class="fas fa-book" style="font-size:50px;color:var(--gray);margin-bottom:15px"></i><h3>No courses available</h3><p>Courses will be added soon.</p></div>`;
+    return;
+  }
+  courses.forEach(course => {
+    const card = document.createElement('div'); card.className='subject-card';
+    card.innerHTML = `<h3><i class="${course.icon}"></i> ${course.name}</h3><p>${course.description}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:15px">
+        <span style="font-size:14px;color:var(--primary)"><i class="fas fa-play-circle"></i> ${getTotalLectures(course)} Lectures</span>
+        <button class="btn" style="padding:8px 15px;font-size:14px">View</button>
+      </div>`;
+    card.addEventListener('click', ()=> openCourse(semId, deptId, course.id));
+    grid.appendChild(card);
+  });
+}
+
+function openCourse(semId, deptId, courseId, push=true){
+  if (push) pushState({type:'course', semId, deptId, courseId});
+  const courses = COURSES[semId] && COURSES[semId][deptId] ? COURSES[semId][deptId] : [];
+  const course = courses.find(c=>c.id===courseId);
+  if (!course) return;
+  const content = document.getElementById('contentSections');
+  content.innerHTML = `<section class="content-section active"><button class="back-btn" onclick="openDepartment('${semId}','${deptId}')"><i class="fas fa-arrow-left"></i> Back to ${DEPARTMENTS.find(d=>d.id===deptId).name}</button><h2 class="section-title">${course.name}</h2><p style="text-align:center;color:var(--gray);margin-bottom:30px">${course.description}</p><div class="unit-accordion" id="unitAccordion"></div></section>`;
+  const unitAccordion = document.getElementById('unitAccordion');
+  course.units.forEach((unit, uidx) => {
+    const unitItem = document.createElement('div'); unitItem.className='unit-item';
+    unitItem.innerHTML = `<div class="unit-header" data-unit="${uidx}"><h4><i class="fas fa-folder"></i> ${unit.name}</h4><i class="fas fa-chevron-down"></i></div><div class="unit-content" id="unit-content-${uidx}"><div class="lecture-list" id="lecture-list-${uidx}"></div></div>`;
+    unitAccordion.appendChild(unitItem);
+    const unitHeader = unitItem.querySelector('.unit-header');
+    const unitContent = unitItem.querySelector('.unit-content');
+    const lectureList = unitItem.querySelector('.lecture-list');
+    unit.lectures.forEach((lecture, lidx)=>{
+      const lectureItem = document.createElement('div'); lectureItem.className='lecture-item';
+      lectureItem.innerHTML = `<div class="lecture-content"><i class="fas fa-play-circle"></i><div><div style="font-weight:500">${lecture.name}</div><div style="font-size:12px;color:var(--gray);margin-top:5px">Lecture ${lidx+1}</div></div></div><div class="lecture-loading"><i class="fas fa-spinner fa-spin"></i></div>`;
+      lectureItem.addEventListener('click', ()=> playLecture(lecture.url, lecture.name, lectureItem));
+      lectureList.appendChild(lectureItem);
+    });
+    unitHeader.addEventListener('click', ()=> {
+      const isActive = unitHeader.classList.contains('active');
+      if (!isActive) { unitHeader.classList.add('active'); unitContent.classList.add('active'); } else { unitHeader.classList.remove('active'); unitContent.classList.remove('active'); }
+    });
+  });
+}
+
+/* ---------- Lecture open + shortener ---------- */
+async function playLecture(url, title, lectureItem=null){
+  if (lectureItem) lectureItem.querySelector('.lecture-loading').classList.add('active');
+  showPopup('Opening lecture...');
+  try {
+    if (CONFIG.LECTURE_SHORTENER) {
+      const short = await shortenWithAdrino(url);
+      if (short) {
+        jumpToUrl(short);
+      } else {
+        // fallback ask user
+        const ok = confirm('Shortening failed — open original link?');
+        if (ok) jumpToUrl(url);
+      }
+    } else {
+      jumpToUrl(url);
+    }
+  } catch (e) {
+    console.error('playLecture error', e);
+    const ok = confirm('Error while opening. Open original link?');
+    if (ok) jumpToUrl(url);
+  } finally {
+    if (lectureItem) lectureItem.querySelector('.lecture-loading').classList.remove('active');
+  }
+}
+
+function jumpToUrl(url){
+  currentLectureUrl = url;
+  const newTab = window.open(url, '_blank', 'noopener,noreferrer,width=1200,height=700');
+  if (!newTab) {
+    // popup blocked -> open modal with manual button
+    document.getElementById('lectureModal').classList.add('active');
+  }
+  setTimeout(()=> hidePopup(), 1800);
+}
+
+function openLectureManually(){
+  if (currentLectureUrl) {
+    const a=document.createElement('a'); a.href=currentLectureUrl; a.target='_blank'; a.rel='noopener noreferrer'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  closeLectureModal();
+}
+function closeLectureModal(){ document.getElementById('lectureModal').classList.remove('active'); currentLectureUrl=''; }
+
+/* ---------- Adrino shortener (simple GET pattern used in your files) ---------- */
+async function shortenWithAdrino(targetUrl){
+  try {
+    // NOTE: many APIs block browser CORS. This client-side shortening works only if Adrino endpoint allows browser calls.
+    const endpoint = `${CONFIG.ADRINO_API_ENDPOINT}?api=${CONFIG.ADRINO_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
+    const res = await fetch(endpoint, { method: 'GET' });
+    if (!res.ok) throw new Error('Adrino responded ' + res.status);
+    const j = await res.json();
+    // try common keys
+    return j.shortenedUrl || j.short || j.data?.short || j.resultUrl || null;
+  } catch (e) {
+    console.warn('Adrino shorten failed', e);
+    return null;
+  }
+}
+
+/* ---------- Helpers & UI ---------- */
+function getTotalLectures(course){ return course.units.reduce((t,u)=>t + (u.lectures?.length||0), 0); }
+function pushState(s){ navigationStack.push(currentState); currentState = s; history.pushState(s,'','#'); updateNavigationHistory(); }
+function updateNavigationHistory(){ const nav=document.getElementById('navHistory'); let html=''; if (navigationStack.length>0){ html += `<div class="nav-item" onclick="showWelcome()"><i class="fas fa-home"></i> Home</div>`; navigationStack.forEach(st=>{ html += `<div class="nav-separator">›</div>`; if (st.type==='semester'){ const sem=SEMESTERS.find(x=>x.id===st.semId); html += `<div class="nav-item" onclick="openSemester('${st.semId}')">${sem.name}</div>`;} if (st.type==='department'){ const dept=DEPARTMENTS.find(d=>d.id===st.deptId); html += `<div class="nav-item" onclick="openDepartment('${st.semId}','${st.deptId}')">${dept.name}</div>`;} }) } nav.innerHTML = html; }
+function showWelcome(){ navigationStack=[]; currentState={type:'welcome'}; updateNavigationHistory(); document.querySelectorAll('.sem-tab').forEach(t=>t.classList.remove('active')); document.getElementById('contentSections').innerHTML = ''; }
+function goBack(){ if(navigationStack.length){ const prev = navigationStack.pop(); loadState(prev); } else showWelcome(); }
+function loadState(state){ if (!state) return showWelcome(); if (state.type==='semester') openSemester(state.semId,false); if (state.type==='department') openDepartment(state.semId, state.deptId,false); if (state.type==='course') openCourse(state.semId, state.deptId, state.courseId,false); }
+function uid(n=6){ return Math.random().toString(36).slice(2,2+n); }
+function showPopup(msg){ const el=document.getElementById('popupNotification'); document.getElementById('popupMessage').textContent=msg; el.classList.add('show'); }
+function hidePopup(){ document.getElementById('popupNotification').classList.remove('show'); }
+function setupPopupHandling(){ setTimeout(()=>{ const test = window.open('','_blank'); if (test) test.close(); },1000); }
+function openTelegramModal(){ document.getElementById('telegramModal').classList.add('active'); }
+function closeTelegramModal(){ document.getElementById('telegramModal').classList.remove('active'); }
+
+/* expose a couple of functions for nav in html */
+window.openSemester = openSemester;
+window.openDepartment = openDepartment;
+window.openCourse = openCourse;
+window.playLecture = playLecture;
+window.goBack = goBack;
+window.showWelcome = showWelcome;
+
+/* end of script */
+</script>
+</body>
+</html>
