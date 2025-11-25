@@ -785,6 +785,7 @@ const COURSES = {
                                     { name: "L15", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bef10ca7faa97cd581e0",pdf : "" },
                                     { name: "L16", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bef50ca7faa97cd581e1" ,pdf : ""},
                                     { name: " L17", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909befa0ca7faa97cd581e2",pdf : "" },
+                                  { name: " ONESHOT", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909befa0ca7faa97cd581e2",pdf : "" },
                                 ]
                             },
                             {
@@ -801,7 +802,7 @@ const COURSES = {
                                     { name: " L9", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf760ca7faa97cd581eb",pdf : "" },
                                     { name: "L10", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf7b0ca7faa97cd581ec",pdf : "" },
                                     { name: "L11", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf7f0ca7faa97cd581ed" ,pdf : ""},
-                                    { name: "unit2 oneshot p1", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf850ca7faa97cd581ee",pdf : "" },
+                                    { name: "unit2 oneshot p1", url: "rm:v70193u",pdf : "" },
                                     { name: "u2 Oneshot p2", url: "http://rural-brynne-praxy-8c5b7084.koyeb.app/watch/6909bf8b0ca7faa97cd581ef",pdf : "" },
                                 ]
                             },
@@ -1175,6 +1176,46 @@ function jumpToUrl(url) {
     document.getElementById("closeVideoModal").onclick = () => modal.remove();
     return;
   }
+// CASE 2 → Rumble embed
+if (url.startsWith("rm:")) {
+    const rumbleId = url.replace("rm:", "");
+
+    const iframeHTML = `
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+        <iframe 
+          src="https://rumble.com/embed/${rumbleId}/?pub=4"
+          style="width:100%; height:100%; position:absolute; left:0; top:0; border:none;"
+          allowfullscreen>
+        </iframe>
+      </div>
+    `;
+
+    const modal = document.createElement("div");
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.background = "rgba(0,0,0,0.85)";
+    modal.style.zIndex = "99999";
+    modal.style.display = "flex";
+    modal.style.alignItems = "center";
+    modal.style.justifyContent = "center";
+
+    modal.innerHTML = `
+      <div style="width:90%; max-width:900px; background:#111; padding:20px; border-radius:10px;">
+        ${iframeHTML}
+        <button id="closeRumbleModal" style="
+          margin-top:20px; padding:10px; width:100%; 
+          background:#6c63ff; color:white; border:none; 
+          border-radius:8px; cursor:pointer;">Close</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.getElementById("closeRumbleModal").onclick = () => modal.remove();
+    return;
+}
 
   // CASE 2 → Normal Link
   currentLectureUrl = url;
